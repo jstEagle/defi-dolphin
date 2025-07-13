@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   title: "DefiDolphin",
   description: "Don't get eaten by the Sharks",
   icons: {
-    icon: "/favicon.jpg",
+    icon: "/icon.png",
   },
 };
 

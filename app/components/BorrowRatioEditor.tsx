@@ -1,90 +1,90 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import BorrowRatioSlider from "./BorrowRatioSlider";
+import { roundNumberToDecimals } from "../helper";
+import React from "react";
 
 type BorrowRatioEditorProps = {
-    baseAmount: number;
-    quoteAmount: number;
-    baseImg: string;
-    baseSymbol: string;
-    quoteImg: string;
-    quoteSymbol: string;
-    baseQuoteRatio: number;
-    basePrice: number;
-    baseIR: number;
-    quoteIR: number;
-    onRatioChange: (ratio: number) => void;
+	baseImg: string;
+	baseSymbol: string;
+	quoteImg: string;
+	quoteSymbol: string;
+	borrowAmount: number;
+	basePrice: number;
+	baseIR: number;
+	quoteIR: number;
+	onRatioChange: (ratio: number) => void;
+	ratio: number; // Add this line
 }
 
-export default function BorrowRatioEditor({
-    baseAmount,
-    quoteAmount,
-    baseImg,
-    baseSymbol,
-    quoteImg,
-    quoteSymbol,
-    baseQuoteRatio,
-    basePrice,
-    baseIR,
-    quoteIR,
-    onRatioChange
-}: BorrowRatioEditorProps) {
-    // Slider configuration
-    const min = 0;
-    const max = 100;
-    const step = 1;
+const BorrowRatioEditor = ({
+	baseImg,
+	baseSymbol,
+	quoteImg,
+	quoteSymbol,
+	borrowAmount,
+	basePrice,
+	baseIR,
+	quoteIR,
+	onRatioChange,
+	ratio // Add this line
+}: BorrowRatioEditorProps) => {
+	// Slider configuration
+	const min = 0;
+	const max = 100;
+	const step = 1;
 
-    // Local state for slider/input
-    const [sliderValue, setSliderValue] = useState(baseQuoteRatio);
+	const [baseAmount, setBaseAmount] = useState(roundNumberToDecimals((borrowAmount / (100 / (100 - ratio))) / basePrice, 4));
+	const [quoteAmount, setQuoteAmount] = useState(roundNumberToDecimals((borrowAmount / (100 / ratio)), 4));
 
-    // Keep local state in sync with prop changes
-    useEffect(() => {
-        setSliderValue(baseQuoteRatio);
-    }, [baseQuoteRatio]);
+	// Keep local state in sync with prop changes
+	useEffect(() => {
+		setBaseAmount(roundNumberToDecimals((borrowAmount / (100 / (100 - ratio))) / basePrice, 4));
+		setQuoteAmount(roundNumberToDecimals((borrowAmount / (100 / ratio)), 4));
+	}, [ratio, borrowAmount, basePrice]);
 
-    // Notify parent when slider/input changes
-    useEffect(() => {
-        onRatioChange(sliderValue);
-    }, [sliderValue, onRatioChange]);
+	// Notify parent when slider/input changes
+	// Only call onRatioChange when the slider changes
+	const handleSliderChange = (val: number) => {
+		onRatioChange(val);
+	};
 
-    // Calculate percentages for display
-    const basePercent = 100 - sliderValue;
-    const quotePercent = sliderValue;
+	return (
+		<div className="w-full max-w-xl mx-auto py-6">
+			<div className="flex justify-center items-center mb-2">
+				<span className="text-l text-neutral-400">Borrow Ratio</span>
+			</div>
+			{/* Tokens */}
+			<div className="flex justify-between items-center w-full px-6 mb-2">
+				{/* Base */}
+				<div className="flex items-center gap-2">
+					<Image src={baseImg} alt={baseSymbol} width={28} height={28} className="rounded-full" />
+					<span className="text-neutral-600 text-m font-semibold">{baseSymbol}</span>
+					<span className="text-neutral-400 text-xs">{baseAmount} ({100-ratio}%)</span>
+				</div>
+				{/* Quote */}
+				<div className="flex items-center gap-2">
+					<span className="text-neutral-400 text-xs">{quoteAmount} ({ratio}%)</span>
+					<span className="text-neutral-600 text-m font-semibold">{quoteSymbol}</span>
+					<Image src={quoteImg} alt={quoteSymbol} width={28} height={28} className="rounded-full" />
+				</div>
+			</div>
+			{/* IR */}
+			<div>
 
-    return (
-        <div className="w-full max-w-xl mx-auto py-6">
-            <div className="flex justify-center items-center mb-2">
-                <span className="text-l text-neutral-400">Borrow Ratio</span>
-            </div>
-            {/* Tokens */}
-            <div className="flex justify-between items-center w-full px-6 mb-2">
-                {/* Base */}
-                <div className="flex items-center gap-2">
-                    <Image src={baseImg} alt={baseSymbol} width={28} height={28} className="rounded-full" />
-                    <span className="text-neutral-600 text-m font-semibold">{baseSymbol}</span>
-                    <span className="text-neutral-400 text-xs">{baseAmount} ({"50%"})</span>
-                </div>
-                {/* Quote */}
-                <div className="flex items-center gap-2">
-                    <span className="text-neutral-400 text-xs">{quoteAmount} ({"50%"})</span>
-                    <span className="text-neutral-600 text-m font-semibold">{quoteSymbol}</span>
-                    <Image src={quoteImg} alt={quoteSymbol} width={28} height={28} className="rounded-full" />
-                </div>
-            </div>
-            {/* IR */}
-            <div>
-
-            </div>
-            <div className="w-full px-4 flex flex-col items-center">
-                {/* Slider Track & Thumb */}
-                <BorrowRatioSlider
-                    value={sliderValue}
-                    onChange={setSliderValue}
-                    min={min}
-                    max={max}
-                    step={step}
-                />
-            </div>
-        </div>
-    );
+			</div>
+			<div className="w-full px-4 flex flex-col items-center">
+				{/* Slider Track & Thumb */}
+				<BorrowRatioSlider
+					value={ratio}
+					onChange={handleSliderChange}
+					min={min}
+					max={max}
+					step={step}
+				/>
+			</div>
+		</div>
+	);
 }
+
+export default React.memo(BorrowRatioEditor);

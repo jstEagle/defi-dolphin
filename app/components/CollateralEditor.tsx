@@ -1,18 +1,24 @@
 import Image from "next/image"
-import React from "react"
+import React, { useEffect, useState } from "react"
 
 type CollateralEditorProps = {
     baseSymbol: string
     quoteSymbol: string
     baseImg: string
     quoteImg: string
-    baseAmount: number
-    quoteAmount: number
     onBaseAmountChange: (amount: number) => void
     onQuoteAmountChange: (amount: number) => void
 }
 
-export default function CollateralEditor({ baseSymbol, quoteSymbol, baseImg, quoteImg, baseAmount, quoteAmount, onBaseAmountChange, onQuoteAmountChange }: CollateralEditorProps) {
+const CollateralEditor = ({ baseSymbol, quoteSymbol, baseImg, quoteImg, onBaseAmountChange, onQuoteAmountChange }: CollateralEditorProps) => {
+    const [baseAmount, setBaseAmount] = useState(0);
+    const [quoteAmount, setQuoteAmount] = useState(0);
+
+    useEffect(() => {
+        onBaseAmountChange(baseAmount);
+        onQuoteAmountChange(quoteAmount);
+    }, [baseAmount, quoteAmount, onBaseAmountChange, onQuoteAmountChange]);
+
     return (
         <div>
         <div className="flex justify-center items-center">
@@ -29,7 +35,7 @@ export default function CollateralEditor({ baseSymbol, quoteSymbol, baseImg, quo
                         className="bg-transparent outline-none text-neutral-600 text-lg w-16 text-right [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         value={baseAmount}
                         min={0}
-                        onChange={e => onBaseAmountChange(Number(e.target.value))}
+                        onChange={e => setBaseAmount(Number(e.target.value))}
                     />
                 </div>
             </div>
@@ -43,7 +49,7 @@ export default function CollateralEditor({ baseSymbol, quoteSymbol, baseImg, quo
                         className="bg-transparent outline-none text-neutral-600 text-lg w-16 text-right [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         value={quoteAmount}
                         min={0}
-                        onChange={e => onQuoteAmountChange(Number(e.target.value))}
+                        onChange={e => setQuoteAmount(Number(e.target.value))}
                     />
                 </div>
             </div>
@@ -51,3 +57,5 @@ export default function CollateralEditor({ baseSymbol, quoteSymbol, baseImg, quo
         </div>
     )
 }
+
+export default React.memo(CollateralEditor);

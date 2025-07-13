@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 interface BorrowRatioSliderProps {
     value: number;
@@ -15,6 +15,19 @@ const BorrowRatioSlider: React.FC<BorrowRatioSliderProps> = ({
     max = 100,
     step = 1,
 }) => {
+    // Add state for editing the 50% label
+    const [editing, setEditing] = useState(false);
+    const [inputValue, setInputValue] = useState(value);
+
+    // Handler for confirming input
+    const confirmInput = () => {
+        let newValue = Number(inputValue);
+        if (isNaN(newValue)) newValue = 50;
+        newValue = Math.max(min, Math.min(max, newValue));
+        onChange(newValue);
+        setEditing(false);
+    };
+
     return (
         <div className="w-full">
             <div className="relative items-center w-full px-12" style={{height: 48}}>
@@ -70,7 +83,43 @@ const BorrowRatioSlider: React.FC<BorrowRatioSliderProps> = ({
             <div className="flex w-full justify-between text-neutral-400 text-m font-medium select-none">
                 <span className='opacity-70'>100%</span>
                 <span className='opacity-70'>75%</span>
-                <span className={value <= 53 && value >= 47 ? 'text-neutral-600 font-bold' : 'opacity-70'}>50%</span>
+                {/* Editable 50% label */}
+                {editing ? (
+                    <input
+                        type="number"
+                        className="w-16 text-center text-neutral-600 font-bold bg-neutral-50 border border-neutral-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
+                        value={inputValue}
+                        min={min}
+                        max={max}
+                        step={step}
+                        autoFocus
+                        onChange={e => setInputValue(Number(e.target.value))}
+                        onBlur={confirmInput}
+                        onKeyDown={e => {
+                            if (e.key === 'Enter') confirmInput();
+                            if (e.key === 'Escape') setEditing(false);
+                        }}
+                    />
+                ) : (
+                    <span
+                        className={value <= 53 && value >= 47 ? 'text-neutral-600 font-bold cursor-pointer' : 'opacity-70 cursor-pointer'}
+                        onClick={() => {
+                            setInputValue(value);
+                            setEditing(true);
+                        }}
+                        tabIndex={0}
+                        onKeyDown={e => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                setInputValue(value);
+                                setEditing(true);
+                            }
+                        }}
+                        role="button"
+                        aria-label="Edit borrow ratio"
+                    >
+                        50%
+                    </span>
+                )}
                 <span className='opacity-70'>75%</span>
                 <span className='opacity-70'>100%</span>
             </div>

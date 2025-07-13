@@ -12,7 +12,7 @@ type LeverageSliderProps = {
     step: number;
 }
 
-export default function LeverageSlider({ value, onChange, min, max, step }: LeverageSliderProps) {
+const LeverageSlider = ({ value, onChange, min, max, step }: LeverageSliderProps) => {
     const [sliderValue, setSliderValue] = useState(value);
 
     useEffect(() => {
@@ -86,11 +86,13 @@ export default function LeverageSlider({ value, onChange, min, max, step }: Leve
                             if (val > max) val = max;
                             setSliderValue(val);
                         }}
-                        className="w-16 px-2 py-1 pr-5 rounded-lg border-none bg-[#181B28] text-white font-semibold text-lg text-center focus:outline-none focus:ring-0 focus:border-none shadow-none focus:shadow-none appearance-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        className="w-16 px-2 py-1 pr-5 rounded-lg border-none bg-sky-400 text-neutral-100 font-semibold text-lg text-center focus:outline-none focus:ring-0 focus:border-none shadow-none focus:shadow-none appearance-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground font-semibold text-lg pointer-events-none select-none">x</span>
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sky-100 font-semibold text-lg pointer-events-none select-none">x</span>
                 </div>
             </div>
         </div>
     )
 }
+
+export default React.memo(LeverageSlider);

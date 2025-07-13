@@ -22,7 +22,7 @@ function rgbToString(rgb: [number, number, number]): string {
   return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`
 }
 
-export default function PositionTypeSlider({ value, token = "X" }: PositionTypeSliderProps) {
+const PositionTypeSlider = ({ value, token = "X" }: PositionTypeSliderProps) => {
   // Clamp value between 0 and 1
   const clamped = Math.max(0, Math.min(1, value))
   // Red (0) to Green (1)
@@ -94,3 +94,5 @@ export default function PositionTypeSlider({ value, token = "X" }: PositionTypeS
     </div>
   )
 }
+
+export default React.memo(PositionTypeSlider);
