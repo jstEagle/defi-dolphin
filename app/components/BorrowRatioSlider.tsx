@@ -81,8 +81,8 @@ const BorrowRatioSlider: React.FC<BorrowRatioSliderProps> = ({
             </div>
             {/* Labels */}
             <div className="flex w-full justify-between text-neutral-400 text-m font-medium select-none">
-                <span className='opacity-70'>100%</span>
-                <span className='opacity-70'>75%</span>
+                <span className='opacity-70'>0%</span>
+                <span className='opacity-70'>25%</span>
                 {/* Editable 50% label */}
                 {editing ? (
                     <input
