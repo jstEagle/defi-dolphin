@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "title": "Defi Dolphin",
+  "description": "A tool to help DeFiTuna liquidity providers evaluate positions and work toward more profitable LP decisions.",
+  "tags": [
+    "TypeScript",
+    "DeFi",
+    "Liquidity",
+    "DeFiTuna"
+  ],
+  "featured": false,
+  "order": 205,
+  "links": {
+    "repo": "https://github.com/jstEagle/defi-dolphin"
+  },
+  "images": []
+}
